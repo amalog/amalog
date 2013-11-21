@@ -1,0 +1,40 @@
+// these predicates must be provided by the implementation
+
+// True if X is a variable
+var X
+
+// True if X is a number
+number X
+
+// True if X is a database
+database X
+
+// True if X is a database with Name (an atom)
+name X Name
+
+// True if X is a database with Clauses (a sequence)
+clauses X Clauses
+
+// True if X is a variable with Flavor (an atom)
+flavor X Flavor
+
+// True if variable X has a Hook named Name
+var_hook X Name Hook
+
+// True if variable X is built on top of Ref
+var_ref X Ref
+
+// Load Value from Ref
+load Ref Value
+
+// Store Value into Ref
+store Ref Value
+
+// Cmp is -1 if X is less than Y
+// Cmp is  0 if X is identical to Y
+// Cmp is  1 if X is greater than Y
+// Performs no arithmetic evaluation.
+//
+// == and < and > and =< and >= are all implemented in terms
+// of this predicate
+compare X Y Cmp

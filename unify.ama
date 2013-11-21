@@ -1,0 +1,76 @@
+
+X = Y
+    var X
+    var Y
+    !
+    // must have the same flavor
+    flavor X FlavorX
+    flavor Y FlavorY
+    FlavorX == FlavorY
+
+    // load each variable's implementation value
+    var_hook X preload PreloadX
+    call PreloadX X
+    var_ref X XRef
+    load XRef XVal
+    var_hook Y preload PreloadY
+    call PreloadY Y
+    var_ref Y YRef
+    load YRef YVal
+
+    // calculate join and prepare for storing
+    once
+        var_var_join FlavorX XVal YVal NewVal
+    var_hook X prestore PrestoreX
+    call PrestoreX X NewVal
+    var_hook Y prestore PrestoreY
+    call PrestoreY Y NewVal
+
+    // store new values
+    store XRef NewVal
+    store YRef NewVal
+    var_hook X poststore PoststoreX
+    call PoststoreX X
+    var_hook Y poststore PoststoreY
+    call PoststoreY Y
+X = Y
+    var Y
+    nonvar X
+    !
+    Y = X   // recursively call the following clause
+X = Y
+    var X
+    nonvar Y
+    !
+    // load variable's implementation value
+    var_hook X preload PreloadX
+    call PreloadX X
+    var_ref X XRef
+    load XRef XVal
+
+    // calculate join and prepare for storing
+    flavor X FlavorX
+    once
+        var_nonvar_join FlavorX XVal Y NewVal
+    var_hook X prestore PrestoreX
+    call PrestoreX X NewVal
+
+    // store new values
+    store XRef NewVal
+    var_hook X poststore PoststoreX
+    call PoststoreX X
+X = Y
+    number X
+    number Y
+    !
+    X == Y
+X = Y
+    database X
+    database Y
+    !
+    name X NameX
+    name Y NameY
+    NameX == NameY
+    clauses X ClausesX
+    clauses Y ClausesY
+    map (=) ClausesX ClausesY

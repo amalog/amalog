@@ -1,0 +1,81 @@
+// definitions for standard predicates
+
+// nonvar X
+//
+// True if X is not a variable.
+nonvar X
+    not
+        var X
+
+
+// map :Goal +Seq0 -Seq
+// map :Goal -Seq0 +Seq
+//
+// True if Goal is true for each corresponding pair of elements in
+// Seq0 and Seq.
+map _ [] []
+map Goal [H0|T0] [H|T]
+    call Goal H0 H
+    map Goal T0 T
+
+// union :Eq +Seq0 +Seq1 -Seq
+//
+// True if Seq is the union (without duplicates) of Seq0 and Seq1 where
+// equality between values is calculated by Eq.
+union Eq [] Seq Seq
+union Eq [H|T] Seq0 Seq
+    if
+        memberchk Eq H Seq0
+        union T Seq0 Seq
+        union T [H|Seq0] Seq
+
+// memberchk Eq ?X +Xs
+//
+// True if X is contained in Xs where equality between values is
+// calculated by Eq.
+memberchk Eq X [H|T]
+    if
+        call Eq X H
+        true
+        memberchk Eq X T
+
+// short-circuiting disjunction. leaves no choicepoints
+// TODO handle arbitrarily long lists of arguments
+orelse X _
+    call X
+    !
+orelse _ X
+    call X
+
+// Term comparison operators
+X == Y
+    compare X Y 0
+X < Y
+    compare X Y -1
+X > Y
+    compare X Y 1
+X >= Y
+    orelse
+        X > Y
+        X == Y
+X =< Y
+    orelse
+        X < Y
+        X == Y
+
+// negation as failure
+not Goal
+    call Goal
+    !
+    fail
+not _
+
+
+// If Cond is true, seek Then; otherwise, seek Else.
+// Choicepoints created by Cond are cut.
+if Cond Then _Else
+    Cond
+    !
+    Then
+if _Cond _Then Else
+    Else

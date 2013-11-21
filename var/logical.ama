@@ -1,0 +1,32 @@
+// definition of logical variables
+
+// initial values for a logic variable
+new_var logical Ref InitialVal Hooks
+    InitialVal = empty Ref
+    Hooks = hooks
+          preload true
+          prestore true
+          poststore true
+
+// a logical variable has three states:
+//   * empty Ref - does not yet contain a value
+//   * tangled Refs - quantum entanglement across all Refs
+//   * occupied Val - contains a value
+var_var_join logical (empty R0) (empty R1) (tangled [R0 R1])
+var_var_join logical (empty _) (occupied Val) (occupied Val)
+var_var_join logical (empty R0) (tangled Rs) (tangled [R0|Rs])
+var_var_join logical (occupied Val) (tangled Rs) NewVal
+    NewVal = occupied Val
+    // TODO trigger pre-store hooks
+    map (store NewVal) Rs // collapse entangled variables too
+    // TODO trigger post-store hooks
+var_var_join logical (occupied X) (occupied Y) X
+    X = Y
+var_var_join logical (tangled R0s) (tangled R1s) Val
+    union (==) R0s R1s Val
+var_var_join logical V0 V1 NewVal
+    V0 > V1
+    var_var_join logical V1 V0 NewVal
+
+var_val_join Var Val NewVal
+    var_var_join Var (occupied Val) NewVal
